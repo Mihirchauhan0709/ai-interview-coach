@@ -333,7 +333,7 @@ if st.session_state.active_interaction_type == "follow_up" and \
                     # Re-use evaluate-code-ai; it gives feedback and can be prompted for more follow-ups if needed
                     # For now, its primary role here is feedback on the follow-up's code.
                     ai_feedback_res = requests.post(
-                        "f"{BACKEND_URL}/evaluate-code-ai",
+                        f"{BACKEND_URL}/evaluate-code-ai",
                         json={"user_code": fup_code_reply, "question": current_fup_question}
                     )
                 if ai_feedback_res.status_code == 200:
