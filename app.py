@@ -27,6 +27,10 @@ app.add_middleware(
 def home():
     return {"message": "Welcome to AI Interview Coach"}
 
+@app.head("/")
+def head():
+    return
+
 
 class QuestionRequest(BaseModel):
     mode: str
