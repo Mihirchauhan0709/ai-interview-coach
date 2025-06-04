@@ -2,6 +2,8 @@ import streamlit as st
 import requests
 import json
 
+BACKEND_URL = "https://ai-interview-backend.onrender.com"
+
 # --- Page Configuration ---
 st.set_page_config(page_title="AI Interview Coach", layout="wide", initial_sidebar_state="expanded")
 
@@ -63,7 +65,7 @@ with tab1:
         try:
             request_payload = {"mode": mode, "difficulty": difficulty}
             with st.spinner("Generating question..."):
-                res = requests.post("http://localhost:8000/generate-question", json=request_payload)
+                res = requests.post(f"{BACKEND_URL}/generate-question", json=request_payload)
             
             if res.status_code == 200:
                 data = res.json()
@@ -116,7 +118,7 @@ with tab2:
             try:
                 request_payload = {"job_description": jd_text, "num_questions": 3}
                 with st.spinner("Analyzing JD and generating questions..."):
-                    res = requests.post("http://localhost:8000/generate-jd-questions", json=request_payload)
+                    res = requests.post(f"{BACKEND_URL}/generate-jd-questions", json=request_payload)
                 
                 if res.status_code == 200:
                     data = res.json()
@@ -192,7 +194,7 @@ if st.session_state.question and st.session_state.active_interaction_type == "ma
                 
                 with st.spinner("Running your code against test cases..."):
                     eval_payload = {"language": "python", "user_code": user_code, "question_id": q_id_for_eval}
-                    eval_response = requests.post("http://localhost:8000/evaluate-code", json=eval_payload)
+                    eval_response = requests.post(f"{BACKEND_URL}/evaluate-code", json=eval_payload)
 
                 if eval_response.status_code == 200:
                     result = eval_response.json()
@@ -225,7 +227,7 @@ if st.session_state.question and st.session_state.active_interaction_type == "ma
                 # 2. Get AI feedback on the code and potential follow-ups
                 with st.spinner("Getting AI feedback on your code..."):
                     feedback_payload = {"user_code": user_code, "question": current_main_question}
-                    ai_feedback_res = requests.post("http://localhost:8000/evaluate-code-ai", json=feedback_payload)
+                    ai_feedback_res = requests.post(f"{BACKEND_URL}/evaluate-code-ai", json=feedback_payload)
                 
                 if ai_feedback_res.status_code == 200:
                     ai_data = ai_feedback_res.json()
@@ -265,7 +267,7 @@ if st.session_state.question and st.session_state.active_interaction_type == "ma
                 # 1. Get AI feedback on the text answer
                 with st.spinner("Getting AI feedback on your answer..."):
                     feedback_payload = {"user_answer": user_answer, "question": current_main_question}
-                    feedback_response = requests.post("http://localhost:8000/evaluate-text", json=feedback_payload)
+                    feedback_response = requests.post(f"{BACKEND_URL}/evaluate-text", json=feedback_payload)
                 
                 if feedback_response.status_code == 200:
                     ai_feedback_text = feedback_response.json().get("feedback", "Could not retrieve AI feedback.")
@@ -277,7 +279,7 @@ if st.session_state.question and st.session_state.active_interaction_type == "ma
                 # 2. Get follow-up questions
                 with st.spinner("Generating follow-up questions..."):
                     followup_payload = {"user_answer": user_answer, "question_text": current_main_question}
-                    followup_response = requests.post("http://localhost:8000/ai-follow-up", json=followup_payload)
+                    followup_response = requests.post(f"{BACKEND_URL}/ai-follow-up", json=followup_payload)
                 
                 if followup_response.status_code == 200:
                     followups_data = followup_response.json().get("follow_up", [])
@@ -331,7 +333,7 @@ if st.session_state.active_interaction_type == "follow_up" and \
                     # Re-use evaluate-code-ai; it gives feedback and can be prompted for more follow-ups if needed
                     # For now, its primary role here is feedback on the follow-up's code.
                     ai_feedback_res = requests.post(
-                        "http://localhost:8000/evaluate-code-ai",
+                        "f"{BACKEND_URL}/evaluate-code-ai",
                         json={"user_code": fup_code_reply, "question": current_fup_question}
                     )
                 if ai_feedback_res.status_code == 200:
@@ -365,7 +367,7 @@ if st.session_state.active_interaction_type == "follow_up" and \
                 ai_feedback_text = "Could not get feedback."
                 with st.spinner("Evaluating your follow-up answer..."):
                     response = requests.post(
-                        "http://localhost:8000/evaluate-text",
+                        f"{BACKEND_URL}/evaluate-text",
                         json={"user_answer": fup_text_reply, "question": current_fup_question}
                     )
                 if response.status_code == 200:
@@ -493,7 +495,7 @@ if can_conclude:
             summary_prompt_for_llm = "\n".join(summary_prompt_parts)
 
             response = requests.post(
-                "http://localhost:8000/evaluate-text", 
+                f"{BACKEND_URL}/evaluate-text", 
                 json={"user_answer": summary_prompt_for_llm, "question": "Provide an overall interview summary based on the preceding interaction log."}
             )
             final_summary = response.json().get("feedback", "Could not generate final summary.")
