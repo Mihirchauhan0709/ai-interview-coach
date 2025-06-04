@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import json
 
-BACKEND_URL = "https://ai-interview-backend.onrender.com"
+BACKEND_URL = "https://ai-interview-coach-qm5u.onrender.com"
 
 # --- Page Configuration ---
 st.set_page_config(page_title="AI Interview Coach", layout="wide", initial_sidebar_state="expanded")
