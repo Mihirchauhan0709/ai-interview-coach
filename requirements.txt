@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 langchain-openai == 0.3.16
+langchain
 openai == 1.78.1
 requests
 python-dotenv
