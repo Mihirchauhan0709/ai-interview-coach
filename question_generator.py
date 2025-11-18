@@ -4,6 +4,7 @@ from langchain.schema import HumanMessage
 import os
 from dotenv import load_dotenv
 
+
 load_dotenv()
 llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), temperature=0.7)
 
