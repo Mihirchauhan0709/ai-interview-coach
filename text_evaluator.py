@@ -9,6 +9,8 @@ llm = ChatOpenAI(api_key=os.getenv("OPENAI_API_KEY"), temperature=0.7)
 
 
 
+
+
 def evaluate_text_answer(answer: str, question: str):
     prompt = f"""Evaluate the following answer to a technical interview question:
 
